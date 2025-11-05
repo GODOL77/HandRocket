@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+
+
 public struct HandPacket
 {
     public string State;    // 손이 Object를 못 들어올릴 때 State를 구분해서 손에 Attach 하는용
