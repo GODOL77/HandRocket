@@ -24,7 +24,7 @@ public class PythonStarter : MonoBehaviour
         {
 
 
-            string pythonScriptPath = @"D:\HandRocket\python\webcam.py";
+            string pythonScriptPath = @"D:\HandRocket\HandTracking\Assets\python\webcam.py";
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "python";
