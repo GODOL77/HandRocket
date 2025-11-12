@@ -22,6 +22,7 @@ detector = HandDetector(maxHands = maxHands, detectionCon = 0.8)
 # Communication
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serverAddressPort = (serverAddress, serverPort)
+
 def one_hand_detection():
     while True:
         # Get the frame from the webcam

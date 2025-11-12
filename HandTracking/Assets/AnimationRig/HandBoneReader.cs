@@ -3,49 +3,41 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
-namespace AnimationRig
+[System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
+public class DescriptionAttribute : PropertyAttribute
 {
-    public class HandBoneReader : MonoBehaviour
+    public string Text;
+    public DescriptionAttribute(string text)
     {
-        private List<Transform> _allBones;
-
-        [SerializeField]
-        private List<string> excludedBones = new()
-        {
-            "Hand",
-            "root"
-        };
-        
-        [ReadOnly]
-        public List<Transform> bonesToViewOnly = new();
-        
-        void Start()
-        {
-            excludedBones.Add(gameObject.name);
-            _allBones = new List<Transform>(GetComponentsInChildren<Transform>());
-            _allBones.RemoveAll(bone => excludedBones.Contains(bone.name));
-            
-            bonesToViewOnly = _allBones.ToList();
-
-            foreach (Transform bone in _allBones)
-            {
-                Debug.Log($"Bone Name: {bone.name}, Local Position: {bone.localPosition}, Local Rotation: {bone.localRotation}");
-            }
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (_allBones != null &&  _allBones.Count > 0)
-            {
-                foreach (Transform bone in _allBones)
-                {
-                    Gizmos.color = bone.name == "WRIST" ? Color.red : Color.green;
-                    Gizmos.DrawSphere(bone.position, 0.2f);
-                }
-            }
-        }
+        Text = text;
     }
 }
 
-// TODO : 각 정점에 HandTracking 처럼 transform 적용시켜보기
+[ExecuteAlways, Description("임포트된 fbx의 본을 검사")]
+public class HandBoneReader : MonoBehaviour
+{
+    [Header("제외할 본")]
+    [SerializeField]
+    private List<string> excludedBones = new()
+    {
+        "Hand",
+        "root"
+    };
+        
+    [ReadOnly]
+    public List<Transform> bonesToViewOnly = new();
 
+    private void Awake()
+    {
+        excludedBones.Add(gameObject.name);
+        bonesToViewOnly = new List<Transform>(GetComponentsInChildren<Transform>());
+        bonesToViewOnly.RemoveAll(bone => excludedBones.Contains(bone.name));
+            
+        bonesToViewOnly = bonesToViewOnly.ToList();
+    }
+}
+
+// 구상안
+// 1. Reader에서 각 본의 위치를 보냄
+// 2. Manager의 HandTracking 스크립트에서 List를 읽어 각 본에 대칭되게 세팅함
+// 3. 

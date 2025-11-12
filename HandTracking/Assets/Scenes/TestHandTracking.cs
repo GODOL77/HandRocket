@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HandTracking : MonoBehaviour
+public class TestHandTracking : MonoBehaviour
 {
     public UDPReceive udpReceive;
     public GameObject[] handPoints;
