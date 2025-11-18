@@ -1,89 +1,75 @@
 using UnityEngine;
 using System.Diagnostics;
-using System;
-
-
-// 현재 포트 점유 충돌 문제로 인해 python 스크립트 실행 순서를 정해야 함
-// webcam.py에서 socket.bind 삭제 혹은 유니티 프로젝트 세팅에서 ScriptExecutionOrder 설정이 필요함
-
+using System.IO;
 
 public class PythonStarter : MonoBehaviour
 {
-    private Process pythonProcess;
+    private Process webcamProcess;
+    private Process functionProcess;
 
     void Start()
     {
-        RunPythonScript();
+        RunExe("webcam.exe", ref webcamProcess);
+        RunExe("functionLib.exe", ref functionProcess);
     }
 
-
-    void RunPythonScript()
+    void RunExe(string exeName, ref Process process)
     {
+        // exe가 들어있는 경로
+        string exePath = Path.Combine(Application.streamingAssetsPath, "python", exeName);
 
-        try
+        if (!File.Exists(exePath))
         {
-
-
-            string pythonScriptPath = @"D:\HandRocket\HandTracking\Assets\python\webcam.py";
-
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "python";
-            startInfo.Arguments = pythonScriptPath;
-
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.CreateNoWindow = true;
-
-            //프로세스 시작
-            pythonProcess = new Process();
-            pythonProcess.StartInfo = startInfo;
-
-            //유니티가 멈추지않고 출력 받기
-            pythonProcess.OutputDataReceived += (sender, args) =>
-            {
-                if (!string.IsNullOrEmpty(args.Data))
-                {
-                    UnityEngine.Debug.Log("Python Output: " + args.Data);
-                }
-            };
-            pythonProcess.ErrorDataReceived += (sender, args) =>
-            {
-                if (!string.IsNullOrEmpty(args.Data))
-                {
-                    UnityEngine.Debug.LogError("Python Error: " + args.Data);
-                }
-            };
-
-            pythonProcess.Start();
-
-            pythonProcess.BeginOutputReadLine();
-            pythonProcess.BeginErrorReadLine();
-
-            UnityEngine.Debug.Log("Python script started successfully.");
-        }
-        catch (Exception e)
-        {
-            UnityEngine.Debug.LogError("Exception while starting Python script: " + e.Message);
-            UnityEngine.Debug.LogWarning("PC에 python.exe가 설치되어 있고, 시스템 환경 변수(PATH)에 등록되어 있는지 확인하세요.");
+            UnityEngine.Debug.LogError("Python exe 파일을 찾을 수 없습니다: " + exePath);
+            return;
         }
 
+        ProcessStartInfo psi = new ProcessStartInfo();
+        psi.FileName = exePath;
+        psi.WorkingDirectory = Path.GetDirectoryName(exePath);
+        psi.UseShellExecute = false;
+        psi.RedirectStandardOutput = true;
+        psi.RedirectStandardError = true;
+        psi.CreateNoWindow = true;
 
+        process = new Process();
+        process.StartInfo = psi;
+
+        process.OutputDataReceived += (sender, args) =>
+        {
+            if (!string.IsNullOrEmpty(args.Data))
+                UnityEngine.Debug.Log("[Python OUT] " + args.Data);
+        };
+
+        process.ErrorDataReceived += (sender, args) =>
+        {
+            if (!string.IsNullOrEmpty(args.Data))
+                UnityEngine.Debug.LogError("[Python ERR] " + args.Data);
+        };
+
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+
+        UnityEngine.Debug.Log("실행됨: " + exeName);
     }
 
-    // Update is called once per frame
-    void Update()
-{
-
-}
-    
     void OnApplicationQuit()
     {
-        if (pythonProcess != null && !pythonProcess.HasExited)
+        TryKill(webcamProcess);
+        TryKill(functionProcess);
+    }
+
+    void TryKill(Process p)
+    {
+        try
         {
-            UnityEngine.Debug.Log("Killing python process...");
-            pythonProcess.Kill(); // 프로세스 강제 종료
-            pythonProcess = null;
+            if (p != null && !p.HasExited)
+            {
+                p.Kill();
+                UnityEngine.Debug.Log("Python exe 종료됨");
+            }
         }
+        catch { }
     }
 }

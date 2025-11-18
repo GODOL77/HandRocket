@@ -3627,6 +3627,7 @@ MonoBehaviour:
   port: 5052
   startReceiving: 1
   printToConsole: 0
+  startDelaySeconds: 0.5
 --- !u!114 &1116132518
 MonoBehaviour:
   m_ObjectHideFlags: 0
