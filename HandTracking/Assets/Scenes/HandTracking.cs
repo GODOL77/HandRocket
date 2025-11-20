@@ -5,7 +5,15 @@ public class HandTracking : MonoBehaviour
     public UDPReceive udpReceive;
     public GameObject[] handPoints;
 
-    public bool calcType = true;
+    public bool calcType = false;
+
+    private string _currentHandState = "UNKNOWN";
+
+    public string HandState 
+    { 
+        get { return _currentHandState; } 
+    }
+
     
     void Update()
     {
@@ -53,13 +61,23 @@ public class HandTracking : MonoBehaviour
         string data = udpReceive?.Packet.Data;
         if (string.IsNullOrEmpty(data))
             return;
-   
+
+
+        //손 랜드마크와 상태 분리하는 부분
         string[] split  = data.Split('|');
         if (split.Length < 2) 
             return;
         
-        string handState = split[0];
+
+
+         _currentHandState = split[0];
         string pointsString = split[1];
+        //손 상태 데이터 저장하는 부분 = split[0]
+
+        if (_currentHandState == "FIST")
+        {
+            //Debug.Log("Fist State Detected");
+        }
         
         if (pointsString.StartsWith("[") && pointsString.EndsWith("]"))
         {
@@ -71,6 +89,8 @@ public class HandTracking : MonoBehaviour
         if (points.Length < handPoints.Length * 3)
             return;
         
+
+        //손 게임 뷰에 hand 위치 출력하는 부분
         for (var i = 0; i < handPoints.Length; i++)
         {
             float x = 5 - float.Parse(points[i * 3]) / 100;
