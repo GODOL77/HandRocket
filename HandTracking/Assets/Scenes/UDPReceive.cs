@@ -25,11 +25,15 @@ public struct HandPacket
 
 public class UDPReceive : MonoBehaviour
 {
+    [Tooltip("Listening port")]
+    public int port = 5052;
+    
+    [Tooltip("Debug")]
+    public bool printToConsole;
+    
     private Thread _receiveThread;
     private UdpClient _client;
-    public int port = 5052;
     public bool startReceiving = true;
-    public bool printToConsole;
 
     public HandPacket Packet => _packet;
     private HandPacket _packet = new("Fist", "");

@@ -3,17 +3,8 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
-[System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
-public class DescriptionAttribute : PropertyAttribute
-{
-    public string Text;
-    public DescriptionAttribute(string text)
-    {
-        Text = text;
-    }
-}
 
-[ExecuteAlways, Description("임포트된 fbx의 본을 검사")]
+[ExecuteAlways]
 public class HandBoneReader : MonoBehaviour
 {
     [Header("제외할 본")]
