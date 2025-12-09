@@ -1689,6 +1689,7 @@ MonoBehaviour:
   midOfHand: {fileID: 436192067}
   bottomOfHand: {fileID: 106874368}
   handTracking: {fileID: 1116132518}
+  hand: {fileID: 0}
 --- !u!136 &520915323
 CapsuleCollider:
   m_ObjectHideFlags: 0

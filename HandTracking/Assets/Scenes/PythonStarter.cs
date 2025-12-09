@@ -24,10 +24,10 @@ public class PythonStarter : MonoBehaviour
         {
 
 
-            string pythonScriptPath = @"D:\HandRocket\HandTracking\Assets\python\webcam.py";
+            string pythonScriptPath = @"C:\Users\sihyu\Desktop\HandRocket\HandTracking\Assets\python\webcam.py";
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = @"C:\Users\D511\AppData\Local\Programs\Python\Python312\python.exe";
+            startInfo.FileName = @"C:\Users\sihyu\AppData\Local\Programs\Python\Python312\python.exe";
             startInfo.Arguments = pythonScriptPath;
 
             startInfo.UseShellExecute = false;

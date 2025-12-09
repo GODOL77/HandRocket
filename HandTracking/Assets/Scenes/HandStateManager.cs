@@ -15,6 +15,8 @@ public class HandStateManager : MonoBehaviour
     Transform heldObject = null;
     string curGesture = "UNKNOWN";
 
+    public GameObject hand;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,6 +31,8 @@ public class HandStateManager : MonoBehaviour
         
         HandInteraction();
 
+        HandZMoving();
+
 
 
         
@@ -37,8 +41,14 @@ public class HandStateManager : MonoBehaviour
 
     void HandMoving()
     {
-        this.transform.position = midOfHand.transform.position;
+        
         handColl.radius = Vector3.Distance(midOfHand.transform.position, bottomOfHand.transform.position) * 0.8f;
+        this.transform.position = new Vector3(midOfHand.transform.position.x, midOfHand.transform.position.y);
+    }
+
+    void HandZMoving()
+    {
+        hand.transform.position = new Vector3(hand.transform.position.x, hand.transform.position.y, handColl.radius * -5f);
     }
 
     void HandInteraction()
