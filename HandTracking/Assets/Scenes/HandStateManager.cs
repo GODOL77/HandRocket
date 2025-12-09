@@ -17,6 +17,10 @@ public class HandStateManager : MonoBehaviour
 
     public GameObject hand;
 
+    // [추가된 변수] 손목 위치를 참조하기 위해 랜드마크 배열에 접근합니다.
+    // MediaPipe 기준 0번 인덱스가 손목입니다.
+    private const int WRIST_INDEX = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -48,7 +52,14 @@ public class HandStateManager : MonoBehaviour
 
     void HandZMoving()
     {
-        hand.transform.position = new Vector3(hand.transform.position.x, hand.transform.position.y, handColl.radius * -5f);
+        // hand 오브젝트의 Z축을 0으로 설정합니다.
+        // X, Y 위치는 기존의 hand.transform.localPosition 값을 그대로 유지합니다.
+        hand.transform.localPosition = new Vector3(
+            hand.transform.localPosition.x, 
+            hand.transform.localPosition.y, 
+            // 🌟 Z 값을 0으로 고정!
+            -3f 
+        );
     }
 
     void HandInteraction()

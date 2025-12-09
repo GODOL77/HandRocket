@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Movable
+  - GasHose
+  - Head
+  - Body
+  - Tail
   layers:
   - Default
   - TransparentFX
