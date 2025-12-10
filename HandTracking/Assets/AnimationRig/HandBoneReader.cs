@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
@@ -20,11 +19,13 @@ public class HandBoneReader : MonoBehaviour
 
     private void Awake()
     {
-        excludedBones.Add(gameObject.name);
+        if (!excludedBones.Contains(gameObject.name))
+        {
+            excludedBones.Add(gameObject.name);
+        }
+        
         bonesToViewOnly = new List<Transform>(GetComponentsInChildren<Transform>());
         bonesToViewOnly.RemoveAll(bone => excludedBones.Contains(bone.name));
-            
-        bonesToViewOnly = bonesToViewOnly.ToList();
     }
 }
 
