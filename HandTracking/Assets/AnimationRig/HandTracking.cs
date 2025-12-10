@@ -7,6 +7,8 @@ public class HandTracking : MonoBehaviour
     /// 1. hand Prefab은 180도 회전 상태여야 정상적으로 동작함
     /// 2. 플레이어가 정면을 바라보는 시점 그대로 재현
     /// 3. handRotationOffset은 손목의 뒤틀림을 보정한 값으로 X = -90을 적용 -> 손바닥 법선 벡터를 기준으로 회전할 때 발생하는 축 보정
+    /// 4. joints에 finger, middle, ring, pinky 순으로 상위 관절부터 순서대로 추가
+    /// 5. thumbsJoints에 thumb의 상위 관절부터 순서대로 추가
     /// </summary>
     
     [Header("state")] 

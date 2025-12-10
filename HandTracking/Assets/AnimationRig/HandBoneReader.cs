@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-
 [ExecuteAlways]
 public class HandBoneReader : MonoBehaviour
 {
@@ -17,7 +16,10 @@ public class HandBoneReader : MonoBehaviour
     [ReadOnly]
     public List<Transform> bonesToViewOnly = new();
 
-    private void Awake()
+    private void OnEnable() => UpdateList();
+    private void OnValidate() => UpdateList();
+
+    private void UpdateList()
     {
         if (!excludedBones.Contains(gameObject.name))
         {
@@ -28,8 +30,3 @@ public class HandBoneReader : MonoBehaviour
         bonesToViewOnly.RemoveAll(bone => excludedBones.Contains(bone.name));
     }
 }
-
-// 구상안
-// 1. Reader에서 각 본의 위치를 보냄
-// 2. Manager의 HandTracking 스크립트에서 List를 읽어 각 본에 대칭되게 세팅함
-// 3. 
