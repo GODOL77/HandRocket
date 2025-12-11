@@ -8,7 +8,12 @@ public class RocketManager : MonoBehaviour
     //public float countdownTime = 20f;
     public Rigidbody rocketRb;
     public GameObject Rocket;
-    public float powerMultiplier = 100f;
+
+    [Tooltip("로켓 파워(연료량)에 곱해지는 추진력 계수")]
+    public float thrustMultiplier = 10f;
+
+    [Header("Thruster State")]
+    public bool isThrusting = false;
 
     [Header("Rocket State")]
     public float fuel = 0f;                 // 충전된 연료의 양
@@ -17,9 +22,7 @@ public class RocketManager : MonoBehaviour
     private bool countdownFinished = false; // 20초 쿨다운 끝나면 발사
 
     public int rocketPower = 0;
-
     public float curTime = 0f;
-
     public bool hoseAttached = false;
 
 
@@ -41,6 +44,11 @@ public class RocketManager : MonoBehaviour
         if (countdownFinished && !rocketLaunched)   // 카운트다운 끝 & 로켓 발사 안되었을 시(완성되었는지 확인하는 if문 필요함)
         {
             CheckRocketPower();
+        }
+
+        if (rocketLaunched && isThrusting)
+        {
+            ApplyThrust();
         }
 
         // if (rocketLaunched == true)
@@ -82,18 +90,6 @@ public class RocketManager : MonoBehaviour
         
         if (rocketParts == 3 && fuel > 0f) 
         {
-            // if (fuel <= 10)
-            // {
-            //     rocketPower = 1;
-            // }
-            // else if (fuel <= 20)
-            // {
-            //     rocketPower = 2;
-            // }
-            // else
-            // {
-            //     rocketPower = 3;
-            // }
             rocketPower = (int)fuel;
             Debug.Log("✅ 제한시간 내 발사 준비 완료! 최종 파워: " + rocketPower);
             LaunchRocket();
@@ -107,9 +103,32 @@ public class RocketManager : MonoBehaviour
     void LaunchRocket()
     {
         rocketLaunched = true;
-
         rocketRb.isKinematic = false;   // 물리 힘 받도록 설정
-        rocketRb.AddForce(Vector3.up * rocketPower * powerMultiplier, ForceMode.Impulse);
-        // Rocket.transform.position += new Vector3(0, rocketPower * 0.1f, 0);
+        isThrusting = true;
+        // rocketRb.AddForce(Vector3.up * rocketPower * powerMultiplier, ForceMode.Impulse);
+    }
+
+    private void ApplyThrust()
+    {
+        if (fuel > 0)
+        {
+            // [핵심 수정 1] 현재 연료량(fuel)과 추진 계수를 곱하여 실제 힘(Force) 계산
+            // fuel이 줄어들면 추진력도 같이 줄어들어 현실적인 소모 표현이 가능합니다.
+            float currentThrustForce = thrustMultiplier * fuel; 
+            
+            // [핵심 수정 2] ForceMode.Force 사용 (질량의 영향을 받음)
+            // Time.deltaTime을 곱하지 않습니다. ForceMode.Force는 FixedUpdate에서 쓰는 것이 일반적이지만, 
+            // Update에서 쓰면 Unity가 자동으로 deltaTime을 계산하여 적용해 줍니다.
+            rocketRb.AddForce(Vector3.up * currentThrustForce, ForceMode.Force); 
+            
+            // 연료 소모율
+            fuel -= Time.deltaTime * 1.5f; 
+        }
+        else
+        {
+            fuel = 0;
+            isThrusting = false;
+            Debug.Log("🔥 연료 소진! 추진 중단, 자유 낙하 시작.");
+        }
     }
 }

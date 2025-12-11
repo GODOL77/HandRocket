@@ -31,9 +31,6 @@ public class FuelHole : MonoBehaviour
             RM.hoseAttached = false;
         }
     }
-
-
-    
 }
 
 
