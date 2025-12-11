@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour
     public Image launchBG;
     public Text fuelText;
     public Text leaveTime;
+    public Text highRecord;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,6 +24,7 @@ public class UIManager : MonoBehaviour
         // 남은 시간이 음수가 되는 것을 방지 (선택적)
         if (remainingTime < 0) remainingTime = 0f;
         leaveTime.text = "LeaveTime " + remainingTime.ToString("F1");
+        highRecord.text = "HighRecord " + RM.maxAltitude.ToString("F1") + "M";
         // if (RM.rocketLaunched)
         // {
         //     launchBG.gameObject.SetActive(true);

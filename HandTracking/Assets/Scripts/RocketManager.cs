@@ -21,6 +21,9 @@ public class RocketManager : MonoBehaviour
     public bool rocketLaunched = false;     // 로켓발사확인함수
     private bool countdownFinished = false; // 20초 쿨다운 끝나면 발사
 
+    [Header("Rocket HighHeight")]
+    public float maxAltitude = 0.0f;
+
     public int rocketPower = 0;
     public float curTime = 0f;
     public bool hoseAttached = false;
@@ -28,7 +31,7 @@ public class RocketManager : MonoBehaviour
 
     void Start()
     {
-        
+        maxAltitude = Rocket.transform.position.y - 3.2f;
     }
 
     void Update()
@@ -51,6 +54,9 @@ public class RocketManager : MonoBehaviour
             ApplyThrust();
         }
 
+        RecordMaxAltitude();
+
+
         // if (rocketLaunched == true)
         // {
         //     LaunchRocket();
@@ -63,7 +69,6 @@ public class RocketManager : MonoBehaviour
         if (curTime >= 30.0f)
         {
             countdownFinished = true;
-
         }
         
     }
@@ -129,6 +134,19 @@ public class RocketManager : MonoBehaviour
             fuel = 0;
             isThrusting = false;
             Debug.Log("🔥 연료 소진! 추진 중단, 자유 낙하 시작.");
+        }
+    }
+
+    void RecordMaxAltitude()
+    {
+        // 로켓의 현재 Y 위치를 가져옵니다.
+        float currentY = Rocket.transform.position.y;
+        
+        // 현재 Y 위치가 기록된 최고 고도보다 높으면 갱신합니다.
+        if (currentY > maxAltitude)
+        {
+            maxAltitude = currentY;
+            Debug.Log($"새로운 최고 고도 기록: {maxAltitude:F2}m"); // 잦은 로그 방지를 위해 주석 처리
         }
     }
 }
